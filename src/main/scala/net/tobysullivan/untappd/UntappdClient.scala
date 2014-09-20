@@ -1,7 +1,6 @@
-package net.tobysullivan.untapped
+package net.tobysullivan.untappd
 
 import com.ning.http.client.AsyncHttpClient
-import net.tobysullivan.untappd.UntappdServiceException
 import net.tobysullivan.untappd.json.reads._
 import net.tobysullivan.untappd.model.BreweryInfo
 import play.api.libs.json._
