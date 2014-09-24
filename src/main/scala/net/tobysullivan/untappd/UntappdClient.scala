@@ -1,32 +1,31 @@
 package net.tobysullivan.untappd
 
-import com.ning.http.client.AsyncHttpClient
 import net.tobysullivan.untappd.json.reads._
 import net.tobysullivan.untappd.model.BreweryInfo
+import net.tobysullivan.untappd.http._
 import play.api.libs.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 
 object UntappdClient extends UntappdClient {
-  val httpClient = new AsyncHttpClient()
+  private val untappdApiPath = "https://api.untappd.com/v4"
+
+  val httpClient = new HttpClient(untappdApiPath)
 }
 
 trait UntappdClient {
-  private val untappdApiPath = "https://api.untappd.com/v4"
-
-  protected val httpClient: AsyncHttpClient
+  protected val httpClient: HttpClient
 
   private def getRequest(endpoint: String): Future[JsValue] = {
-    val f = httpClient.prepareGet(untappdApiPath + endpoint).execute()
 
-    future {
-      val resp = f.get()
+    val futureResponse = httpClient.get(endpoint)
 
-      if (resp.getStatusCode != 200)
-        throw new UntappdServiceException("Response from Untappd API was an error", resp.getStatusCode)
+    futureResponse.map { response =>
+      if (response.statusCode != 200)
+        throw new UntappdServiceException("Response from Untappd API was an error", response.statusCode)
 
-      Json.parse(resp.getResponseBody) \ "meta" \ "response"
+      response.body \ "response"
     }
   }
 

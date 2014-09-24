@@ -6,8 +6,8 @@ import play.api.libs.functional.syntax._
 
 object BreweryInfoReads {
   implicit val breweryInfoReads = (
-    (__ \ "brewery_id").read[Int] and
-      (__ \ "brewery_name").read[String] and
-      (__ \ "brewery_label").read[String]
+    (__ \ "brewery" \ "brewery_id").read[Int] and
+      (__ \ "brewery" \ "brewery_name").read[String] and
+      (__ \ "brewery" \ "brewery_label").read[String]
     )(BreweryInfo.apply _)
 }
